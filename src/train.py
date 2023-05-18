@@ -7,15 +7,14 @@ from torch.utils.data import DataLoader, TensorDataset
 
 import numpy as np
 
-categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
+# categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
+categories = ["おーいお茶", "麦茶"]
 nb_classes = len(categories)
 
 X_train = np.load("./tea_X_train_data.npy")
 X_test = np.load("./tea_X_test_data.npy")
 y_train = np.load("./tea_Y_train_data.npy")
 y_test = np.load("./tea_Y_test_data.npy")
-
-# print(X_train.size, y_train.size)
 
 # データの正規化
 X_train = torch.from_numpy(X_train.astype("float") / 255)
@@ -27,7 +26,6 @@ y_test = torch.from_numpy(y_test)
 
 # カテゴリをベクトルに変換
 y_train = torch.nn.functional.one_hot(y_train.to(torch.int64), num_classes=nb_classes)
-# print(y_train)
 y_test = torch.nn.functional.one_hot(y_test.to(torch.int64), num_classes=nb_classes)
 
 # データセットとデータローダーの作成
@@ -37,8 +35,11 @@ train_loader = DataLoader(train_dataset, batch_size=6, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=6, shuffle=False)
 
 model = Model()
-num_epochs = 10
+# model.load_state_dict(torch.load("./dog_model.pth"))
+
+num_epochs = 2
 batch_size = 6
+
 
 # トレーニングループ
 for epoch in range(num_epochs):
@@ -72,6 +73,8 @@ for epoch in range(num_epochs):
     epoch_accuracy /= len(train_dataset)
 
     print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
+    print(batch_outputs)
+
 
 # テストデータの評価
 model.eval()
@@ -95,3 +98,5 @@ test_loss /= len(test_dataset)
 test_accuracy /= len(test_dataset)
 
 print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}")
+
+torch.save(model.state_dict(), "./dog_model.pth")
