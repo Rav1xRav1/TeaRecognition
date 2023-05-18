@@ -3,10 +3,13 @@ import os, glob
 import numpy as np
 import random, math
 
+import matplotlib.pyplot as plt
+
 # 画像ディレクトリのパス
 root_dir = "./Images"
 # 商品名
-categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
+# categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
+categories = ["おーいお茶", "麦茶"]
 
 # 画像データ用配列
 X = []
@@ -17,11 +20,9 @@ Y = []
 # 画像データごとにadd_sample()を呼び出し、X,Yの配列を返す関数
 def make_sample(files):
     global X, Y
-    X = []
-    Y = []
+    X, Y = [], []
     for cat, fname in files:
         add_sample(cat, fname)
-        print(len(X), len(Y))
     return np.array(X), np.array(Y)
 
 
@@ -36,6 +37,28 @@ def add_sample(cat, fname):
     Y.append(cat)
 
 
+def labeling_one_data():
+    # files = [(0, "./Images/n02085620-Chihuahua/n02085620_12101.jpg")]
+    # files = [(0, "D:/Python/TeaRecognition/src/Images/麦茶/000010.jpg")]
+    files = [(0, "D:/Python/TeaRecognition/src/Images/おーいお茶/000010.jpg")]
+    global X, Y
+    X, Y = [], []
+    for cat, frame in files:
+        add_sample(cat, frame)
+    X_data, Y_data = np.array(X), np.array(Y)
+    np.save("./tea_X_data.npy", X_data)
+    np.save("./tea_Y_data.npy", Y_data)
+
+
+def show_image(image_array):
+    plt.imshow(image_array)
+    plt.axis("off")
+    plt.show()
+
+
+labeling_one_data()
+exit()
+
 # 全データ格納用配列
 allfiles = []
 
@@ -43,7 +66,7 @@ allfiles = []
 for idx, cat in enumerate(categories):
     image_dir = root_dir + "/" + cat  # それぞれの商品用のパス
     files = glob.glob(image_dir + "/*.jpg")  # jpgファイルをすべて取得
-    for f in files[:100]:
+    for f in files:
         allfiles.append((idx, f))
 
 # シャッフル後、学習データと検証データに分ける
@@ -54,9 +77,7 @@ test = allfiles[th:]
 X_train, y_train = make_sample(train)
 X_test, y_test = make_sample(test)
 
-print(X_train.size, y_train.size)
-print(len(X_train), len(y_train))
-print(y_train)
+# show_image(X_train[0])
 
 # データを保存する（データの名前を「tea_data.npy」としている）
 np.save("./tea_X_train_data.npy", X_train)
