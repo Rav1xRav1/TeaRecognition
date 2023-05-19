@@ -19,11 +19,11 @@ class Model(nn.Module):
         self.relu4 = nn.ReLU()
         self.maxpool4 = nn.MaxPool2d(kernel_size=2)
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(6272, 8192)
+        self.fc1 = nn.Linear(32768, 8192)
         self.relu5 = nn.ReLU()
         self.fc2 = nn.Linear(8192, 1024)
         self.relu6 = nn.ReLU()
-        self.fc3 = nn.Linear(1024, 2)
+        self.fc3 = nn.Linear(1024, 4)
         self.sigmoid = nn.Sigmoid()
 
         self.criterion = nn.MSELoss()

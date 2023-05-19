@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 root_dir = "./Images"
 # 商品名
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["おーいお茶", "麦茶"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
 
 # 画像データ用配列
 X = []
@@ -31,7 +31,7 @@ def make_sample(files):
 def add_sample(cat, fname):
     img = Image.open(fname)
     img = img.convert("RGB")  # RGB形式に変換
-    img = img.resize((150, 150))
+    img = img.resize((300, 300))
     data = np.asarray(img)
     X.append(data)
     Y.append(cat)
@@ -56,8 +56,8 @@ def show_image(image_array):
     plt.show()
 
 
-labeling_one_data()
-exit()
+# labeling_one_data()
+# exit()
 
 # 全データ格納用配列
 allfiles = []

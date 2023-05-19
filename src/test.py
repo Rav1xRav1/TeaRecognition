@@ -7,9 +7,10 @@ from torch.utils.data import DataLoader, TensorDataset
 
 import numpy as np
 from PIL import Image
+from tkinter import filedialog as fd
 
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["おーいお茶", "麦茶"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
 nb_classes = len(categories)
 """
 X_data = np.load("./tea_X_data.npy")
@@ -38,10 +39,10 @@ def add_sample(cat, fname):
 # テストデータの評価
 model.eval()
 with torch.no_grad():
-    if input("おーいお茶: 1, 麦茶:2") == "1":
-        files = [(0, f"D:/Python/TeaRecognition/src/Images/おーいお茶/0000{input('ファイル番号(0000nn): ')}.jpg")]
-    else:
-        files = [(1, f"D:/Python/TeaRecognition/src/Images/麦茶/0000{input('ファイル番号(0000nn): ')}.jpg")]
+    typ = [('画像ファイル', '*.jpg')]
+    dir = "D:/Practice/Python/TeaRecognition/src/Images/testimg"
+    fle = fd.askopenfilename(filetypes=typ, initialdir=dir)
+    files = [(0, fle)]
     X, Y = [], []
     for cat, frame in files:
         add_sample(cat, frame)
@@ -54,4 +55,4 @@ with torch.no_grad():
     Y_data = torch.nn.functional.one_hot(Y_data.to(torch.int64), num_classes=nb_classes)
     batch_outputs = model(X_data)
     print(batch_outputs[0])
-    print(batch_outputs[0].argmax(), Y_data)
+    print(f"選ばれたのは{categories[batch_outputs[0].argmax()]}でした。")

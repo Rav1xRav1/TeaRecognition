@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["おーいお茶", "麦茶"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
 nb_classes = len(categories)
 
 X_train = np.load("./tea_X_train_data.npy")
@@ -37,7 +37,7 @@ test_loader = DataLoader(test_dataset, batch_size=6, shuffle=False)
 model = Model()
 # model.load_state_dict(torch.load("./dog_model.pth"))
 
-num_epochs = 2
+num_epochs = 10
 batch_size = 6
 
 
@@ -73,7 +73,6 @@ for epoch in range(num_epochs):
     epoch_accuracy /= len(train_dataset)
 
     print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
-    print(batch_outputs)
 
 
 # テストデータの評価
