@@ -1,8 +1,6 @@
 from model import Model
 
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
 import numpy as np
@@ -49,6 +47,7 @@ for epoch in range(num_epochs):
     num_batches = 0
 
     for batch_inputs, batch_labels in train_loader:
+        print("a")
         model.optimizer.zero_grad()
 
         # 順伝播
