@@ -23,7 +23,7 @@ class Model(nn.Module):
         self.relu5 = nn.ReLU()
         self.fc2 = nn.Linear(8192, 1024)
         self.relu6 = nn.ReLU()
-        self.fc3 = nn.Linear(1024, 4)
+        self.fc3 = nn.Linear(1024, 3)
         self.sigmoid = nn.Sigmoid()
 
         self.criterion = nn.MSELoss()

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "颯"]
 nb_classes = len(categories)
 
 X_train = np.load("./tea_X_train_data.npy")
@@ -38,16 +38,17 @@ model = Model()
 num_epochs = 10
 batch_size = 6
 
-
 # トレーニングループ
 for epoch in range(num_epochs):
     model.train()
     epoch_loss = 0.0
     epoch_accuracy = 0.0
     num_batches = 0
+    total_data_len = 0
+    total_correct = 0
+    total_loss = 0
 
     for batch_inputs, batch_labels in train_loader:
-        print("a")
         model.optimizer.zero_grad()
 
         # 順伝播
@@ -60,6 +61,7 @@ for epoch in range(num_epochs):
         loss.backward()
         model.optimizer.step()
 
+        """
         # ロスと正解率の計算
         epoch_loss += loss.item() * batch_inputs.size(0)
         predicted_labels = torch.round(batch_outputs)
@@ -67,12 +69,23 @@ for epoch in range(num_epochs):
         epoch_accuracy += batch_accuracy * batch_inputs.size(0)
 
         num_batches += 1
+        """
 
-    epoch_loss /= len(train_dataset)
-    epoch_accuracy /= len(train_dataset)
+        for i in range(len(batch_labels)):
+            total_data_len += 1
+            if torch.argmax(batch_outputs[i]) == torch.argmax(batch_labels[i]):
+                total_correct += 1
+            else:
+                total_loss += 1
+            # total_loss += loss.item()
 
-    print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
+    epoch_loss = total_loss / total_data_len
+    epoch_accuracy = total_correct / total_data_len
 
+    # epoch_loss /= len(train_dataset)
+    # epoch_accuracy /= len(train_dataset)
+
+    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
 
 # テストデータの評価
 model.eval()

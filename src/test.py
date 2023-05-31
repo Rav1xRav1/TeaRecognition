@@ -1,16 +1,13 @@
 from model import Model
 
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
 
 import numpy as np
 from PIL import Image
 from tkinter import filedialog as fd
 
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "颯"]
 nb_classes = len(categories)
 """
 X_data = np.load("./tea_X_data.npy")
@@ -25,12 +22,13 @@ Y_data = torch.nn.functional.one_hot(Y_data.to(torch.int64), num_classes=nb_clas
 """
 model = Model()
 model.load_state_dict(torch.load("./dog_model.pth"))
+model.eval()
 
 
 def add_sample(cat, fname):
     img = Image.open(fname)
     img = img.convert("RGB")  # RGB形式に変換
-    img = img.resize((150, 150))
+    img = img.resize((300, 300))
     data = np.asarray(img)
     X.append(data)
     Y.append(cat)

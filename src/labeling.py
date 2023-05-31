@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 root_dir = "./Images"
 # 商品名
 # categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
-categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "綾鷹コラボ", "颯"]
+categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "颯"]
 
 # 画像データ用配列
 X = []
