@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from torch import optim
 
+import matplotlib.pyplot as plt
+
 
 class Model(nn.Module):
     def __init__(self):
@@ -19,12 +21,13 @@ class Model(nn.Module):
         self.relu4 = nn.ReLU()
         self.maxpool4 = nn.MaxPool2d(kernel_size=2)
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(32768, 8192)
+        self.fc1 = nn.Linear(29952, 8192)
         self.relu5 = nn.ReLU()
         self.fc2 = nn.Linear(8192, 1024)
         self.relu6 = nn.ReLU()
         self.fc3 = nn.Linear(1024, 3)
-        self.sigmoid = nn.Sigmoid()
+        # self.sigmoid = nn.Sigmoid()
+        self.softmax = nn.Softmax(dim=1)
 
         self.criterion = nn.MSELoss()
         self.optimizer = optim.Adam(self.parameters())
@@ -50,7 +53,8 @@ class Model(nn.Module):
         x = self.fc2(x)
         x = self.relu6(x)
         x = self.fc3(x)
-        x = self.sigmoid(x)
+        # x = self.sigmoid(x)
+        x = self.softmax(x)
         return x
 
 

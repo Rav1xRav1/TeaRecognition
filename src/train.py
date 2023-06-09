@@ -1,11 +1,13 @@
 from model import Model
 
-import torch
+import torch, datetime
 from torch.utils.data import DataLoader, TensorDataset
 
 import numpy as np
 
-# categories = ["n02085620-Chihuahua", "n02085782-Japanese_spaniel"]
+start = datetime.datetime.now()
+print("開始 :", start)
+
 categories = ["香り立つ旨み綾鷹", "伊藤園おーいお茶", "颯"]
 nb_classes = len(categories)
 
@@ -33,26 +35,22 @@ train_loader = DataLoader(train_dataset, batch_size=6, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=6, shuffle=False)
 
 model = Model()
-# model.load_state_dict(torch.load("./dog_model.pth"))
 
 num_epochs = 10
-batch_size = 6
 
 # トレーニングループ
 for epoch in range(num_epochs):
     model.train()
-    epoch_loss = 0.0
     epoch_accuracy = 0.0
-    num_batches = 0
     total_data_len = 0
     total_correct = 0
-    total_loss = 0
+    total_loss = 0.0
 
     for batch_inputs, batch_labels in train_loader:
-        model.optimizer.zero_grad()
 
         # 順伝播
         batch_outputs = model(batch_inputs)
+        model.optimizer.zero_grad()
         batch_outputs = batch_outputs.to(torch.double)
         batch_labels = batch_labels.to(torch.double)
         loss = model.criterion(batch_outputs, batch_labels)
@@ -61,53 +59,36 @@ for epoch in range(num_epochs):
         loss.backward()
         model.optimizer.step()
 
-        """
         # ロスと正解率の計算
-        epoch_loss += loss.item() * batch_inputs.size(0)
-        predicted_labels = torch.round(batch_outputs)
-        batch_accuracy = (predicted_labels == batch_labels).sum().item() / batch_labels.size(0)
-        epoch_accuracy += batch_accuracy * batch_inputs.size(0)
-
-        num_batches += 1
-        """
-
         for i in range(len(batch_labels)):
             total_data_len += 1
             if torch.argmax(batch_outputs[i]) == torch.argmax(batch_labels[i]):
                 total_correct += 1
-            else:
-                total_loss += 1
-            # total_loss += loss.item()
+            total_loss += loss.item()
 
-    epoch_loss = total_loss / total_data_len
     epoch_accuracy = total_correct / total_data_len
 
-    # epoch_loss /= len(train_dataset)
-    # epoch_accuracy /= len(train_dataset)
+    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {total_loss/total_data_len:.4f}, Accuracy: {epoch_accuracy:.4f}")
 
-    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
+    # テストデータの評価
+    model.eval()
+    total_data_len = 0.0
+    total_correct = 0
 
-# テストデータの評価
-model.eval()
-test_loss = 0.0
-test_accuracy = 0.0
-num_test_batches = 0
+    with torch.no_grad():
+        for batch_inputs, batch_labels in test_loader:
+            batch_outputs = model(batch_inputs)
 
-with torch.no_grad():
-    for batch_inputs, batch_labels in test_loader:
-        batch_outputs = model(batch_inputs)
-        loss = model.criterion(batch_outputs, batch_labels)
+            for i in range(len(batch_labels)):
+                total_data_len += 1
+                if torch.argmax(batch_outputs[i]) == torch.argmax(batch_labels[i]):
+                    total_correct += 1
 
-        test_loss += loss.item() * batch_inputs.size(0)
-        predicted_labels = torch.round(batch_outputs)
-        batch_accuracy = (predicted_labels == batch_labels).sum().item() / batch_labels.size(0)
-        test_accuracy += batch_accuracy * batch_inputs.size(0)
+    test_accuracy = total_correct / total_data_len
 
-        num_test_batches += 1
+    print(f"Test Accuracy: {test_accuracy:.4f}")
+    torch.save(model.state_dict(), f"./{datetime.datetime.now().minute}_model.pth")
 
-test_loss /= len(test_dataset)
-test_accuracy /= len(test_dataset)
+print("終了 :", datetime.datetime.now() - start)
 
-print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}")
-
-torch.save(model.state_dict(), "./dog_model.pth")
+# torch.save(model.state_dict(), "./tea_model.pth")

@@ -31,7 +31,7 @@ def make_sample(files):
 def add_sample(cat, fname):
     img = Image.open(fname)
     img = img.convert("RGB")  # RGB形式に変換
-    img = img.resize((300, 300))
+    img = img.resize((240, 320))
     data = np.asarray(img)
     X.append(data)
     Y.append(cat)
@@ -66,7 +66,8 @@ allfiles = []
 for idx, cat in enumerate(categories):
     image_dir = root_dir + "/" + cat  # それぞれの商品用のパス
     files = glob.glob(image_dir + "/*.jpg")  # jpgファイルをすべて取得
-    for f in files:
+    print(cat, len(files))
+    for f in files[:95]:
         allfiles.append((idx, f))
 
 # シャッフル後、学習データと検証データに分ける
@@ -76,8 +77,6 @@ train = allfiles[0:th]
 test = allfiles[th:]
 X_train, y_train = make_sample(train)
 X_test, y_test = make_sample(test)
-
-# show_image(X_train[0])
 
 # データを保存する（データの名前を「tea_data.npy」としている）
 np.save("./tea_X_train_data.npy", X_train)

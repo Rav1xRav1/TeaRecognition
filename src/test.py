@@ -21,7 +21,7 @@ Y_data = torch.from_numpy(Y_data)
 Y_data = torch.nn.functional.one_hot(Y_data.to(torch.int64), num_classes=nb_classes)
 """
 model = Model()
-model.load_state_dict(torch.load("./dog_model.pth"))
+model.load_state_dict(torch.load("./tea_model.pth"))
 model.eval()
 
 
