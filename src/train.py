@@ -39,8 +39,8 @@ model = Model()
 num_epochs = 10
 
 # トレーニングループ
+model.train()
 for epoch in range(num_epochs):
-    model.train()
     epoch_accuracy = 0.0
     total_data_len = 0
     total_correct = 0
@@ -66,29 +66,31 @@ for epoch in range(num_epochs):
                 total_correct += 1
             total_loss += loss.item()
 
+        print("=", end="")
+
     epoch_accuracy = total_correct / total_data_len
 
-    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {total_loss/total_data_len:.4f}, Accuracy: {epoch_accuracy:.4f}")
+    print(f"\nEpoch [{epoch + 1}/{num_epochs}], Loss: {total_loss/total_data_len:.4f}, Accuracy: {epoch_accuracy:.4f}")
 
-    # テストデータの評価
-    model.eval()
-    total_data_len = 0.0
-    total_correct = 0
+# テストデータの評価
+model.eval()
+total_data_len = 0.0
+total_correct = 0
 
-    with torch.no_grad():
-        for batch_inputs, batch_labels in test_loader:
-            batch_outputs = model(batch_inputs)
+with torch.no_grad():
+    for batch_inputs, batch_labels in test_loader:
+        batch_outputs = model(batch_inputs)
 
-            for i in range(len(batch_labels)):
-                total_data_len += 1
-                if torch.argmax(batch_outputs[i]) == torch.argmax(batch_labels[i]):
-                    total_correct += 1
+        for i in range(len(batch_labels)):
+            total_data_len += 1
+            if torch.argmax(batch_outputs[i]) == torch.argmax(batch_labels[i]):
+                total_correct += 1
 
-    test_accuracy = total_correct / total_data_len
+test_accuracy = total_correct / total_data_len
 
-    print(f"Test Accuracy: {test_accuracy:.4f}")
-    torch.save(model.state_dict(), f"./{datetime.datetime.now().minute}_model.pth")
+print(f"Test Accuracy: {test_accuracy:.4f}")
+# torch.save(model.state_dict(), f"./{datetime.datetime.now().minute}_model.pth")
 
 print("終了 :", datetime.datetime.now() - start)
 
-# torch.save(model.state_dict(), "./tea_model.pth")
+torch.save(model.state_dict(), "./tea_model.pth")

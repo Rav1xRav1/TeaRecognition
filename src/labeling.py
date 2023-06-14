@@ -1,5 +1,5 @@
 from PIL import Image
-import os, glob
+import glob
 import numpy as np
 import random, math
 
@@ -38,8 +38,6 @@ def add_sample(cat, fname):
 
 
 def labeling_one_data():
-    # files = [(0, "./Images/n02085620-Chihuahua/n02085620_12101.jpg")]
-    # files = [(0, "D:/Python/TeaRecognition/src/Images/麦茶/000010.jpg")]
     files = [(0, "D:/Python/TeaRecognition/src/Images/おーいお茶/000010.jpg")]
     global X, Y
     X, Y = [], []

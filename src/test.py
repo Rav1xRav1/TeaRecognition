@@ -28,7 +28,7 @@ model.eval()
 def add_sample(cat, fname):
     img = Image.open(fname)
     img = img.convert("RGB")  # RGB形式に変換
-    img = img.resize((300, 300))
+    img = img.resize((240, 320))
     data = np.asarray(img)
     X.append(data)
     Y.append(cat)
@@ -52,5 +52,5 @@ with torch.no_grad():
     # カテゴリをベクトルに変換
     Y_data = torch.nn.functional.one_hot(Y_data.to(torch.int64), num_classes=nb_classes)
     batch_outputs = model(X_data)
-    print(batch_outputs[0])
+    print(batch_outputs[0], fle)
     print(f"選ばれたのは{categories[batch_outputs[0].argmax()]}でした。")
